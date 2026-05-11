@@ -44,22 +44,59 @@ async def run_developer_agent(task_id: str, worktree_path: str, title: str, desc
         "message": f"Loaded workflow '{workflow_to_load}' and RAG context."
     })
     
-    # STEP 2: Execution (LLM Skipped for now)
+    # STEP 2: Execution (Local Apple MLX LLM Execution)
     log_callback({
         "timestamp": time.strftime("%H:%M:%S"),
         "agent": "Developer",
         "actionType": "thought",
-        "message": "Generating code based on Antigravity rules (LLM execution skipped)..."
+        "message": "Waking up Apple MLX Engine (Llama-3 8B 4bit)..."
     })
     
-    await asyncio.sleep(2)
-    
-    log_callback({
-        "timestamp": time.strftime("%H:%M:%S"),
-        "agent": "Developer",
-        "actionType": "file_change",
-        "message": "Mock: Modified files in worktree."
-    })
+    try:
+        from mlx_lm import load, generate
+        
+        # In a persistent setup, the model would be loaded once at startup.
+        # Here we lazy load it for the task.
+        model_name = "mlx-community/Meta-Llama-3-8B-Instruct-4bit"
+        model, tokenizer = load(model_name)
+        
+        prompt = f"{system_prompt}\n\nTask: {title}\nDescription: {description}\nRAG Context: {rag_context}\n\nPlease generate the required code changes."
+        
+        log_callback({
+            "timestamp": time.strftime("%H:%M:%S"),
+            "agent": "Developer",
+            "actionType": "thought",
+            "message": "Generating code natively on unified memory (MPS)..."
+        })
+        
+        # Generate the response
+        response = generate(model, tokenizer, prompt=prompt, max_tokens=1024, verbose=False)
+        
+        # Mock: Apply the code changes to worktree
+        with open(os.path.join(worktree_path, "agent_output.md"), "w") as f:
+            f.write(response)
+            
+        log_callback({
+            "timestamp": time.strftime("%H:%M:%S"),
+            "agent": "Developer",
+            "actionType": "file_change",
+            "message": f"Code generated successfully. Wrote {len(response)} chars to worktree."
+        })
+        
+    except ImportError:
+        log_callback({
+            "timestamp": time.strftime("%H:%M:%S"),
+            "agent": "Developer",
+            "actionType": "error",
+            "message": "mlx_lm not installed. Falling back to mock generation."
+        })
+        await asyncio.sleep(2)
+        log_callback({
+            "timestamp": time.strftime("%H:%M:%S"),
+            "agent": "Developer",
+            "actionType": "file_change",
+            "message": "Mock: Modified files in worktree."
+        })
     
     # STEP 3: Security & Quality Check (Local-security-agent via Rust)
     log_callback({
