@@ -30,6 +30,12 @@ class ChatResponse(BaseModel):
     answer: str
     sources: list[str] = []
 
+class SearchRequest(BaseModel):
+    query: str
+
+class SearchResponse(BaseModel):
+    context: list[dict]
+
 @app.get("/health")
 def health_check():
     return {"status": "ok", "service": "knowledge-mesh-api"}
@@ -44,6 +50,14 @@ def chat_endpoint(request: ChatRequest):
             answer=answer,
             sources=[] # В рамках демо LangGraph пока отдает только текст
         )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/search", response_model=SearchResponse)
+def search_endpoint(request: SearchRequest):
+    try:
+        results = rag_service.search(request.query)
+        return SearchResponse(context=results)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

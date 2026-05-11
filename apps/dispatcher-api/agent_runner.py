@@ -33,8 +33,18 @@ async def run_developer_agent(task_id: str, worktree_path: str, title: str, desc
     workflow_to_load = "feature-pipeline" if "Frontend" in title else "arch-evolution"
     system_prompt = context_builder.build_system_prompt(workflow_name=workflow_to_load)
     
-    knowledge_agent = KnowledgeAgent(db_path="mock_db")
-    rag_context = knowledge_agent.get_context(title, description)
+    import httpx
+    try:
+        query = f"{title} {description}"
+        resp = httpx.post("http://localhost:8000/api/search", json={"query": query}, timeout=10.0)
+        resp.raise_for_status()
+        results = resp.json().get("context", [])
+        rag_context = "\n\n".join([f"Source: {r['source']}\n{r['content']}" for r in results])
+        if not rag_context:
+            rag_context = "No relevant context found in Vector DB."
+    except Exception as e:
+        rag_context = f"Error fetching from knowledge-api: {e}"
+
     
     await asyncio.sleep(1.5)
     log_callback({

@@ -69,5 +69,10 @@ class RAGService:
             "sources": unique_sources
         }
 
+    def search(self, query: str) -> list[dict]:
+        # Возвращает сырые документы без обработки LLM (полезно для Agent-BOS)
+        docs = self.retriever.invoke(query)
+        return [{"content": doc.page_content, "source": doc.metadata.get('source', 'Unknown')} for doc in docs]
+
 # Singleton экземпляр для переиспользования в FastAPI
 rag_service = RAGService()
