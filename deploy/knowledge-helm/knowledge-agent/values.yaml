@@ -1,0 +1,29 @@
+replicaCount: 1
+
+image:
+  repository: my-registry/knowledge-agent-api
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+webImage:
+  repository: my-registry/knowledge-agent-web
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+service:
+  type: ClusterIP
+  apiPort: 8085
+  webPort: 3000
+
+ingress:
+  enabled: true
+  className: "nginx"
+  hosts:
+    - host: agent.enterprise.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+
+env:
+  OPENAI_API_KEY: ""
+  GITHUB_PERSONAL_ACCESS_TOKEN: ""

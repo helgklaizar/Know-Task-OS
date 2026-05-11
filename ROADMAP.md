@@ -1,10 +1,10 @@
-# 🗺 Omni-Agent OS: Enterprise Master Roadmap (2026-2027)
+# 🗺 Knowledge-Task OS (KT-OS): Enterprise Master Roadmap (2026-2027)
 
 > 🍏 **Part of the Mac AI Ecosystem Initiative**
 > *Strictly designed for high-performance execution, security compliance, and autonomous MLOps on Apple Silicon infrastructure.*
 
 ## 🎯 Executive Vision
-Transform the Omni-Agent OS from a visual dispatcher into a **Production-Grade, Zero-Trust Autonomous Business Operating System**. The platform will orchestrate distributed agentic meshes, enforce strict MLOps pipelines, ensure 100% data privacy via local MLX execution, and provide real-time telemetry and compliance auditing.
+Transform KT-OS from a visual dispatcher into a **Production-Grade, Zero-Trust Autonomous Business Operating System**. The platform will orchestrate distributed agentic meshes, enforce strict MLOps pipelines, ensure 100% data privacy via local MLX execution, and provide real-time telemetry and compliance auditing.
 
 ---
 

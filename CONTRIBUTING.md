@@ -1,4 +1,4 @@
-# 🤝 Contributing to Omni-Agent OS
+# 🤝 Contributing to Knowledge-Task OS (KT-OS)
 
 We welcome contributions! However, since this is a **Premium Standard** and **Local-First** AI project, we have strict guidelines to maintain the integrity of the architecture.
 
@@ -13,8 +13,8 @@ This project uses **Turborepo** for managing multiple applications and packages.
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/helgklaizar/Omni-Agent-OS.git
-   cd Omni-Agent-OS
+   git clone https://github.com/helgklaizar/KT-OS.git
+   cd KT-OS
    ```
 2. **Install dependencies:**
    ```bash

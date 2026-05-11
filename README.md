@@ -8,10 +8,10 @@
   <br />
   <br />
   
-  <h1>🌌 Omni-Agent OS</h1>
+  <h1>🌌 Knowledge-Task OS (KT-OS)</h1>
   
   <p><b>The ultimate Local-First Agentic Mesh and Visual Operating System.</b></p>
-  <p><i>Omni-Agent OS orchestrates isolated autonomous agents across complex software architectures. By combining a visual Kanban dispatcher with offline RAG capabilities and Rust-based security gatekeepers, it bridges the gap between chaotic LLM execution and strict Enterprise engineering pipelines.</i></p>
+  <p><i>KT-OS is a straight-to-the-point Business Operating System that fuses autonomous task management with semantic knowledge retrieval. By combining a visual Kanban dispatcher with offline RAG capabilities and Rust-based security gatekeepers, it creates a robust environment for managing software operations.</i></p>
 
 </div>
 
@@ -35,7 +35,7 @@
 > 🍏 **Part of the Mac AI Ecosystem Initiative**
 > *Этот проект является частью масштабной инициативы по созданию недостающих хардкорных инструментов и расширений для AI-разработки на Apple Silicon.*
 
-Traditional autonomous agents write code directly into your repository, often breaking the main branch, hallucinating context, or leaking credentials. **Omni-Agent OS** solves this by enforcing a strict, visual, step-by-step pipeline:
+Traditional autonomous agents write code directly into your repository, often breaking the main branch, hallucinating context, or leaking credentials. **KT-OS** solves this by enforcing a strict, visual, step-by-step pipeline:
 
 1. **Isolation First:** Every task dragged into "In Progress" triggers a `git worktree add` command. Agents operate in isolated sandbox folders. The `main` branch is mathematically protected.
 2. **Contextual Precision:** Instead of flooding the LLM with the entire codebase, the native Vector RAG module feeds the agent only semantically relevant files.
@@ -48,7 +48,7 @@ Traditional autonomous agents write code directly into your repository, often br
 This project is built as a high-performance **Turborepo**. It physically merges multiple independent AI systems into one cohesive operational mesh.
 
 ```text
-Omni-Agent-OS/
+KT-OS/
 ├── apps/
 │   ├── dispatcher-api/       # Python FastAPI Backend for Kanban Orchestration
 │   ├── dispatcher-web/       # React/Vite Premium UI (Glassmorphism + SSE Terminal)
@@ -106,8 +106,8 @@ graph TD;
 ### Installation
 1. Clone the repository and install global dependencies:
    ```bash
-   git clone https://github.com/helgklaizar/Omni-Agent-OS.git
-   cd Omni-Agent-OS
+   git clone https://github.com/helgklaizar/KT-OS.git
+   cd KT-OS
    npm install
    ```
 
@@ -123,7 +123,7 @@ graph TD;
 ## 🏷 Tags & Meta
 
 **GitHub Description:**  
-`A premium, local-first visual operating system for autonomous AI development. Features Git Worktree isolation, surgical RAG context injection, and an offline Rust-based security Gatekeeper built in a high-performance Turborepo.`
+`A straight-to-the-point Business Operating System that fuses autonomous task management with semantic knowledge retrieval. Features local MLX execution and Rust security gates.`
 
 **Repository Tags:**  
-`ai-agents` `multi-agent-system` `turborepo` `fastapi` `react` `rust` `rag` `git-worktree` `local-first` `autonomous-coding`
+`knowledge-base` `task-management` `business-os` `mlx` `apple-silicon` `fastapi` `rust`

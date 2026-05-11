@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "knowledge-agent.fullname" . }}-api
+  labels:
+    app: {{ include "knowledge-agent.name" . }}-api
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "knowledge-agent.name" . }}-api
+  template:
+    metadata:
+      labels:
+        app: {{ include "knowledge-agent.name" . }}-api
+    spec:
+      containers:
+        - name: api
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.apiPort }}
+          env:
+            - name: OPENAI_API_KEY
+              value: {{ .Values.env.OPENAI_API_KEY | quote }}
+            - name: GITHUB_PERSONAL_ACCESS_TOKEN
+              value: {{ .Values.env.GITHUB_PERSONAL_ACCESS_TOKEN | quote }}
+          volumeMounts:
+            - name: qdrant-storage
+              mountPath: /app/qdrant_storage
+      volumes:
+        - name: qdrant-storage
+          emptyDir: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "knowledge-agent.fullname" . }}-web
+  labels:
+    app: {{ include "knowledge-agent.name" . }}-web
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "knowledge-agent.name" . }}-web
+  template:
+    metadata:
+      labels:
+        app: {{ include "knowledge-agent.name" . }}-web
+    spec:
+      containers:
+        - name: web
+          image: "{{ .Values.webImage.repository }}:{{ .Values.webImage.tag }}"
+          imagePullPolicy: {{ .Values.webImage.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.webPort }}
+          env:
+            - name: NEXT_PUBLIC_API_URL
+              value: "http://{{ include "knowledge-agent.fullname" . }}-api:{{ .Values.service.apiPort }}"

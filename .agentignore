@@ -1,0 +1,68 @@
+# .agentignore
+# Ignore files that bloat AI context or are irrelevant for AI understanding
+
+# Dependencies
+node_modules/
+vendor/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+out/
+.next/
+.nuxt/
+.output/
+
+# Logs and databases
+*.log
+*.sqlite
+*.sqlite3
+*.db
+*.sql
+
+# Media and large assets
+*.mp4
+*.mp3
+*.wav
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+*.webp
+*.fig
+
+# Lock files (can be huge and irrelevant for logic)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+Cargo.lock
+
+# Cache and temp
+.cache/
+.temp/
+.tmp/
+tmp/
+coverage/
+
+# Minified files
+*.min.js
+*.min.css
+
+# Large auto-generated data
+*.csv
+*.jsonl
+data.json
+seed.json
+
+# Environment
+.env
+.env.local
+.env.development
+.env.production
+.venv/
+venv/
+env/
