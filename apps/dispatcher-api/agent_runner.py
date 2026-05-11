@@ -5,6 +5,24 @@ from agents.antigravity_context import AntigravityContextBuilder
 import subprocess
 import json
 import os
+import glob
+from telemetry import log_agent_execution
+
+def load_dynamic_skills(task_title: str, task_desc: str) -> str:
+    """Dynamically loads relevant skills from the global Antigravity registry."""
+    skills_dir = os.path.expanduser("~/.gemini/antigravity/skills")
+    loaded_skills = []
+    if os.path.exists(skills_dir):
+        task_text = f"{task_title} {task_desc}".lower()
+        for skill_path in glob.glob(f"{skills_dir}/**/SKILL.md", recursive=True):
+            skill_name = os.path.basename(os.path.dirname(skill_path))
+            if skill_name.lower() in task_text:
+                try:
+                    with open(skill_path, "r", encoding="utf-8") as f:
+                        loaded_skills.append(f"--- SKILL INJECTED: {skill_name.upper()} ---\n{f.read()}")
+                except Exception:
+                    pass
+    return "\n\n".join(loaded_skills)
 
 # Omni-Agent Execution Engine
 async def run_developer_agent(task_id: str, worktree_path: str, title: str, description: str, log_callback: Callable[[dict], None]):
@@ -45,7 +63,16 @@ async def run_developer_agent(task_id: str, worktree_path: str, title: str, desc
     except Exception as e:
         rag_context = f"Error fetching from knowledge-api: {e}"
 
-    
+    # Load Dynamic Skills
+    dynamic_skills = load_dynamic_skills(title, description)
+    if dynamic_skills:
+        system_prompt += f"\n\n{dynamic_skills}"
+        log_callback({
+            "timestamp": time.strftime("%H:%M:%S"),
+            "agent": "System",
+            "actionType": "system",
+            "message": "Dynamically injected required skills into the agent's context."
+        })
     await asyncio.sleep(1.5)
     log_callback({
         "timestamp": time.strftime("%H:%M:%S"),
@@ -85,7 +112,12 @@ async def run_developer_agent(task_id: str, worktree_path: str, title: str, desc
                 "message": "Generating code natively on unified memory (MPS)..."
             })
             
+            start_time = time.time()
             response = generate(model, tokenizer, prompt=prompt, max_tokens=1024, verbose=False)
+            ttft_ms = (time.time() - start_time) * 1000
+            
+            # Telemetry Log
+            log_agent_execution(task_id, "Developer", ttft_ms, len(response) // 4, success=True, retries=attempt)
             
             with open(os.path.join(worktree_path, "agent_output.md"), "w") as f:
                 f.write(response)
@@ -140,6 +172,7 @@ async def run_developer_agent(task_id: str, worktree_path: str, title: str, desc
                     "actionType": "system",
                     "message": "Security scan passed. Aegis confirmed 0 leaks."
                 })
+                log_agent_execution(task_id, "Gatekeeper", 0.0, 0, success=True, retries=attempt)
                 break  # Success! Exit loop.
             else:
                 log_callback({
@@ -148,6 +181,7 @@ async def run_developer_agent(task_id: str, worktree_path: str, title: str, desc
                     "actionType": "error",
                     "message": f"Task rejected: Aegis found {len(findings)} security violations! Sending feedback to Developer..."
                 })
+                log_agent_execution(task_id, "Gatekeeper", 0.0, 0, success=False, retries=attempt)
                 security_feedback = json.dumps(findings, indent=2)
                 
         except subprocess.CalledProcessError as e:
@@ -167,6 +201,7 @@ async def run_developer_agent(task_id: str, worktree_path: str, title: str, desc
             "actionType": "warning",
             "message": f"Task stuck after {max_retries} attempts. Initiating Stuck Protocol 2.0..."
         })
+        log_agent_execution(task_id, "System", 0.0, 0, success=False, retries=max_retries)
         
         # Invoke Knowledge Agent for emergency consultation
         try:
