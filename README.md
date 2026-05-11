@@ -32,6 +32,9 @@
 
 ## 🧠 Concept & Philosophy
 
+> 🍏 **Part of the Mac AI Ecosystem Initiative**
+> *Этот проект является частью масштабной инициативы по созданию недостающих хардкорных инструментов и расширений для AI-разработки на Apple Silicon.*
+
 Traditional autonomous agents write code directly into your repository, often breaking the main branch, hallucinating context, or leaking credentials. **Omni-Agent OS** solves this by enforcing a strict, visual, step-by-step pipeline:
 
 1. **Isolation First:** Every task dragged into "In Progress" triggers a `git worktree add` command. Agents operate in isolated sandbox folders. The `main` branch is mathematically protected.

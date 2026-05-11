@@ -20,3 +20,7 @@ worktrees/
 # Build
 dist/
 build/
+
+# AI Internal State
+.gemini/
+docs/sprints/
