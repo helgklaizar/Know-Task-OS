@@ -13,12 +13,12 @@
 ---
 
 > 🍏 **Part of the Mac AI Ecosystem Initiative**
-> Этот проект является частью масштабной инициативы по созданию недостающих хардкорных инструментов и расширений для AI-разработки на Apple Silicon.
+> This project is part of a large-scale initiative to create missing hardcore tools and extensions for AI development natively on Apple Silicon.
 
 ## 📋 TL;DR
 A production-ready Machine Learning system that automatically routes customer support tickets to the correct department (e.g., Billing, Technical, Sales, Delivery) using NLP and CatBoost. It achieves **96.6% accuracy** on the Bitext support dataset, replacing the need for expensive LLM inference for basic routing tasks.
 
-## 🚀 Features (Изюминки)
+## 🚀 Features
 - **⚡️ Blazing Fast Inference:** Uses `TfidfVectorizer` + `CatBoostClassifier` instead of heavy Transformers, executing in milliseconds on standard CPUs.
 - **🎯 High Accuracy:** 96.6% accuracy across 11 complex support departments (Refunds, Delivery, Invoices, etc.).
 - **🌐 REST API Ready:** Fully wrapped in a FastAPI microservice.

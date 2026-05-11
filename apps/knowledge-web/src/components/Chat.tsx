@@ -9,7 +9,7 @@ type Message = {
 
 export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: "Привет! Я Enterprise Agentic Mesh. Задай вопрос по коду или базе знаний." }
+    { role: "assistant", content: "Hello! I am the Enterprise Agentic Mesh. Ask a question about the code or the knowledge base." }
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -23,7 +23,7 @@ export default function Chat() {
     setLoading(true);
 
     try {
-      // Для MVP стучимся напрямую в uvicorn (нужно будет настроить CORS или proxy)
+      // For the MVP, we hit uvicorn directly (CORS or proxy needs to be configured)
       const res = await fetch("http://localhost:8085/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -33,7 +33,7 @@ export default function Chat() {
 
       setMessages((prev) => [...prev, { role: "assistant", content: data.answer }]);
     } catch (error) {
-      setMessages((prev) => [...prev, { role: "assistant", content: "Ошибка соединения с бэкендом." }]);
+      setMessages((prev) => [...prev, { role: "assistant", content: "Backend connection error." }]);
     } finally {
       setLoading(false);
     }
@@ -58,7 +58,7 @@ export default function Chat() {
         {loading && (
           <div className="flex justify-start">
             <div className="bg-zinc-800 p-4 rounded-2xl rounded-bl-none text-zinc-400 animate-pulse text-sm">
-              Агенты думают...
+              Agents are thinking...
             </div>
           </div>
         )}
@@ -70,7 +70,7 @@ export default function Chat() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-          placeholder="Спроси что-нибудь..."
+          placeholder="Ask something..."
           className="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
         />
         <button
@@ -78,7 +78,7 @@ export default function Chat() {
           disabled={loading || !input.trim()}
           className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-6 py-3 rounded-lg font-medium transition-colors shadow-lg"
         >
-          Отправить
+          Send
         </button>
       </div>
     </div>

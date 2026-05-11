@@ -1,30 +1,30 @@
 # Project Report: Intelligent Support Assistant 🎧
 
 ## 1. Executive Summary
-Проект направлен на создание системы автоматической маршрутизации обращений в техническую поддержку на базе Machine Learning. Цель — снизить нагрузку на L1-поддержку путем автоматического определения нужного отдела (Billing, Tech, Sales и др.) по тексту сообщения пользователя.
+The project aims to create an automated support ticket routing system based on Machine Learning. The goal is to reduce the load on L1 support by automatically identifying the correct department (Billing, Tech, Sales, etc.) from the user's message text.
 
-## 2. Фаза сбора данных (Data Foundations)
-- **Источник:** Использован открытый датасет HuggingFace `bitext/Bitext-customer-support-llm-chatbot-training-dataset`.
-- **Объем:** 5000 сэмплов (оптимизировано для быстрой проверки гипотез).
-- **Признаки (Features):** `ticket_text` (текст), `issue_type` (интент), `department` (целевая переменная).
-- **Результаты EDA:** Данные очищены, выявлено 11 уникальных отделов. Длина текста в среднем не превышает 300 символов, что идеально подходит для TF-IDF векторизации.
+## 2. Data Collection Phase (Data Foundations)
+- **Source:** Open HuggingFace dataset `bitext/Bitext-customer-support-llm-chatbot-training-dataset` was used.
+- **Volume:** 5000 samples (optimized for rapid hypothesis testing).
+- **Features:** `ticket_text` (text), `issue_type` (intent), `department` (target variable).
+- **EDA Results:** Data was cleaned, revealing 11 unique departments. The average text length does not exceed 300 characters, which is ideal for TF-IDF vectorization.
 
-## 3. Фаза моделирования (Classic ML)
-В рамках Спринта 2 была обучена модель классического машинного обучения.
-- **Векторизация:** `TfidfVectorizer` (max_features=2000, n-grams=1..2, удалены стоп-слова). Переводит текст в числовые векторы.
-- **Модель:** `CatBoostClassifier` (от Яндекса). Выбрана за высокую скорость инференса и качество работы "из коробки".
-- **Параметры обучения:** 100 итераций, `learning_rate=0.1`, глубина дерева `depth=6`.
+## 3. Modeling Phase (Classic ML)
+During Sprint 2, a classic machine learning model was trained.
+- **Vectorization:** `TfidfVectorizer` (max_features=2000, n-grams=1..2, stop words removed). Converts text into numerical vectors.
+- **Model:** `CatBoostClassifier` (by Yandex). Chosen for its high inference speed and out-of-the-box performance quality.
+- **Training Parameters:** 100 iterations, `learning_rate=0.1`, tree depth `depth=6`.
 
-### Результаты тестирования (Evaluation)
-- **Точность (Accuracy):** 96.60% на отложенной тестовой выборке (1000 сэмплов).
-- **Метрики:** Precision по критическим отделам (`REFUND`, `PAYMENT`, `CONTACT`) достигает 99-100%.
+### Evaluation Results
+- **Accuracy:** 96.60% on the hold-out test set (1000 samples).
+- **Metrics:** Precision for critical departments (`REFUND`, `PAYMENT`, `CONTACT`) reaches 99-100%.
 
-## 4. Бизнес-решение (Архитектурный комитет)
-**Решение:** Отказаться от внедрения тяжеловесных Deep Learning моделей (PyTorch, Transformers) на данном этапе.
-**Обоснование:** 
-1. Точность CatBoost (96.6%) более чем удовлетворяет бизнес-требования для маршрутизатора первой линии.
-2. Использование классического ML кардинально снижает стоимость инфраструктуры (инференс на обычном CPU работает за миллисекунды, GPU не требуется).
-3. Ускоряется Time-to-Market.
+## 4. Business Decision (Architecture Committee)
+**Decision:** Abandon the implementation of heavyweight Deep Learning models (PyTorch, Transformers) at this stage.
+**Justification:** 
+1. CatBoost's accuracy (96.6%) more than satisfies the business requirements for a first-line router.
+2. Using classic ML drastically reduces infrastructure costs (inference runs in milliseconds on a standard CPU; no GPU required).
+3. Accelerated Time-to-Market.
 
-## 5. Фаза Delivery (MLOps)
-Модель и векторизатор сериализованы (`.pkl` и `.cbm`). Следующим шагом система оборачивается в REST API сервис с использованием **FastAPI**, что позволит интегрировать ее в любые существующие CRM или хелпдески (Zendesk, Jira Service Desk).
+## 5. Delivery Phase (MLOps)
+The model and vectorizer are serialized (`.pkl` and `.cbm`). The next step is to wrap the system in a REST API service using **FastAPI**, which will allow it to be integrated into any existing CRM or helpdesk (Zendesk, Jira Service Desk).
