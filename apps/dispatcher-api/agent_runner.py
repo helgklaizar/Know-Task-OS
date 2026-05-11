@@ -2,8 +2,9 @@ import asyncio
 import time
 from typing import Callable
 from agents.antigravity_context import AntigravityContextBuilder
-from agents.knowledge import KnowledgeAgent
-from agents.security import SecurityAgent
+import subprocess
+import json
+import os
 
 # Omni-Agent Execution Engine
 async def run_developer_agent(task_id: str, worktree_path: str, title: str, description: str, log_callback: Callable[[dict], None]):
@@ -60,30 +61,47 @@ async def run_developer_agent(task_id: str, worktree_path: str, title: str, desc
         "message": "Mock: Modified files in worktree."
     })
     
-    # STEP 3: Security & Quality Check (Local-security-agent)
+    # STEP 3: Security & Quality Check (Local-security-agent via Rust)
     log_callback({
         "timestamp": time.strftime("%H:%M:%S"),
         "agent": "Gatekeeper",
         "actionType": "thought",
-        "message": "Scanning git diffs for leaks and bad practices..."
+        "message": "Invoking Rust Aegis Gatekeeper to scan git diffs..."
     })
     
-    security_agent = SecurityAgent(worktree_path)
-    scan_result = security_agent.run_scan()
+    cargo_toml = os.path.join(os.path.dirname(__file__), "..", "..", "packages", "security-core", "Cargo.toml")
     
-    await asyncio.sleep(1.5)
-    
-    if scan_result["status"] == "pass":
-        log_callback({
-            "timestamp": time.strftime("%H:%M:%S"),
-            "agent": "Gatekeeper",
-            "actionType": "system",
-            "message": "Security scan passed. Code is clean."
-        })
-    else:
+    try:
+        process = subprocess.run(
+            ["cargo", "run", "--quiet", "--manifest-path", cargo_toml, "--", "-p", worktree_path, "-f", "json"],
+            capture_output=True, text=True, check=True
+        )
+        
+        # Parse the JSON output from Rust scanner
+        if process.stdout.strip():
+            findings = json.loads(process.stdout)
+        else:
+            findings = []
+            
+        if len(findings) == 0:
+            log_callback({
+                "timestamp": time.strftime("%H:%M:%S"),
+                "agent": "Gatekeeper",
+                "actionType": "system",
+                "message": "Security scan passed. Aegis confirmed 0 leaks."
+            })
+        else:
+            log_callback({
+                "timestamp": time.strftime("%H:%M:%S"),
+                "agent": "Gatekeeper",
+                "actionType": "error",
+                "message": f"Task rejected: Aegis found {len(findings)} security violations!"
+            })
+    except subprocess.CalledProcessError as e:
         log_callback({
             "timestamp": time.strftime("%H:%M:%S"),
             "agent": "Gatekeeper",
             "actionType": "error",
-            "message": "Task rejected: Security violations found."
+            "message": f"Gatekeeper crash: {e.stderr}"
         })
+

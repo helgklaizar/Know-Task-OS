@@ -1,5 +1,5 @@
 {
-  "name": "aegis-bot",
+  "name": "@omni/security-github-app",
   "version": "1.0.0",
   "description": "Aegis GitHub App for automated security PR reviews",
   "author": "Antigravity",
