@@ -3,15 +3,17 @@ import Column from './Column';
 import StuckModal from './StuckModal';
 import CreateTaskModal from './CreateTaskModal';
 import { useRBAC } from './RBAC';
+import { useI18n } from './I18n';
+import './Board.css';
 import type { CardType } from '../types';
 
-const COLUMNS = [
-  { id: 'Backlog', title: 'Backlog' },
-  { id: 'To Do', title: 'To Do' },
-  { id: 'In Progress', title: 'Agent Thinking (In Progress)' },
-  { id: 'Blocked', title: 'Blocked (Human Needed)' },
-  { id: 'Review', title: 'Gatekeeper Review' },
-  { id: 'Done', title: 'Done' }
+const COLUMNS_KEYS = [
+  { id: 'Backlog', titleKey: 'backlog' },
+  { id: 'To Do', titleKey: 'todo' },
+  { id: 'In Progress', titleKey: 'inProgress' },
+  { id: 'Blocked', titleKey: 'blocked' },
+  { id: 'Review', titleKey: 'review' },
+  { id: 'Done', titleKey: 'done' }
 ];
 
 const Board: React.FC = () => {
@@ -19,6 +21,7 @@ const Board: React.FC = () => {
   const [selectedStuckCard, setSelectedStuckCard] = useState<CardType | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const { canManageAgents } = useRBAC();
+  const { t } = useI18n();
 
   const fetchCards = async () => {
     try {
@@ -92,30 +95,33 @@ const Board: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 h-full">
-      <div className="flex justify-between items-center bg-zinc-900 p-4 rounded-xl border border-zinc-800 shadow-md">
-        <h2 className="text-lg font-medium text-zinc-200">Active Sprint Board</h2>
+    <div className="board-wrapper">
+      <div className="board-header">
+        <h2 className="board-title">
+          <span>📋</span> {t('activeSprint')}
+        </h2>
         {canManageAgents && (
           <button 
             onClick={() => setIsCreateModalOpen(true)}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium shadow-lg transition-colors flex items-center gap-2"
+            className="add-task-btn"
           >
-            <span className="text-xl leading-none">+</span> Add Task
+            <span>+</span> {t('addTask')}
           </button>
         )}
       </div>
 
-      <div className="board-container flex-1 min-h-0">
-        {COLUMNS.map(col => (
+      <div className="board-container" style={{ flex: 1, minHeight: 0 }}>
+        {COLUMNS_KEYS.map(col => (
         <Column 
           key={col.id} 
           id={col.id} 
-          title={col.title} 
+          title={t(col.titleKey as any)} 
           cards={cards.filter(c => c.status === col.id)}
           onCardClick={handleCardClick}
           onDropCard={handleDropCard}
         />
       ))}
+      </div>
 
       {selectedStuckCard && (
         <StuckModal 

@@ -1,5 +1,6 @@
 import React from 'react';
 import type { CardType } from '../types';
+import { useI18n } from './I18n';
 import './Card.css';
 
 interface CardProps {
@@ -8,6 +9,8 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = ({ card, onClick }) => {
+  const { t } = useI18n();
+
   const agentColors: Record<string, string> = {
     'Architect': 'var(--accent-purple)',
     'Coder': 'var(--accent-blue)',
@@ -43,8 +46,8 @@ const Card: React.FC<CardProps> = ({ card, onClick }) => {
           )}
         </div>
       </div>
-      <h4 className="card-title">{card.title}</h4>
-      <p className="card-desc">{card.description}</p>
+      <h4 className="card-title">{t(card.title as any)}</h4>
+      <p className="card-desc">{t(card.description as any)}</p>
       
       {card.isStuck && (
         <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid var(--accent-red)', borderRadius: '6px', padding: '8px', marginBottom: '1rem', fontSize: '0.75rem', color: '#ff9999' }}>

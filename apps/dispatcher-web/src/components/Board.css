@@ -1,0 +1,53 @@
+.board-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex: 1;
+  overflow: hidden;
+  background: var(--bg-dark);
+}
+
+.board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.board-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.board-container {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  height: calc(100vh - 150px);
+}
+
+.add-task-btn {
+  background: var(--accent-orange);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+
+.add-task-btn:hover {
+  background: #ea580c;
+}

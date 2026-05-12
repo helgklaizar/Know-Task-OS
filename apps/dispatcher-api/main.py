@@ -79,6 +79,27 @@ def get_cards():
         ) for r in rows
     ]
 
+class CreateCardModel(BaseModel):
+    title: str
+    description: str
+
+@app.post("/api/cards", response_model=CardModel)
+def create_card(card: CreateCardModel):
+    import uuid
+    card_id = str(uuid.uuid4())[:8]
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO cards (id, title, description, status, agentRole, gitBranch, isStuck, cost) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        (card_id, card.title, card.description, "Backlog", "Unassigned", "", False, 0.0)
+    )
+    conn.commit()
+    conn.close()
+    return CardModel(
+        id=card_id, title=card.title, description=card.description, status="Backlog",
+        agentRole="Unassigned", gitBranch="", isStuck=False, cost=0.0
+    )
+
 class StatusUpdateModel(BaseModel):
     status: str
 
